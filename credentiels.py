@@ -1,17 +1,9 @@
 # MQTT Broker info
-MQTT_IP = '';
-MQTT_PORT = 1883
+import random
 
-# SQL credentials
-SQL_USER = '';
-SQL_PASSWORD = '';
-
-# User variables for MQTT Broker connection
 mqttBroker = "broker.emqx.io"
 mqttBrokerPort = 1883
-mqttUser = None
-mqttPassword = None
-topic = "/python/mqtt"
+mqttTopic = "/python/mqtt"
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 
 # User variables for MQTT Broker connection
