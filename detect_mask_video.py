@@ -28,24 +28,28 @@ client_id = f'python-mqtt-{random.randint(0, 1000)}'
 ##################################################################
 #In this part we will deal with the MQTT and MySQL connection code
 ##################################################################
-def on_connect(client, userdata, flags, rc):
- 
-    if rc == 0:
- 
-        print("[INFO] Connected to broker")
- 
-        global Connected                #Use global variable
-        Connected = True                #Signal connection 
- 
-    else:
- 
-        print("[ERROR] Connection failed")
- 
-Connected = False   #global variable for the state of the connection
- 
-client = mqttClient.Client("Python")               #create new instance
-client.on_connect= on_connect                      #attach function to callback
-client.connect(mqttBroker, port=mqttBrokerPort)
+def connect_mqtt():
+	def on_connect(client, userdata, flags, rc):
+		if rc == 0:
+			print("[INFO] Connected to broker")
+		else:
+			print("[ERROR] Connection failed")
+
+	client = mqttClient.Client(client_id)    #create new instance
+	client.on_connect = on_connect           #attach function to callback
+	client.connect(mqttBroker, port=mqttBrokerPort, keepalive=60)
+	return client        
+
+#Save Data into DB Table
+##################################################################
+def subscribe(client: mqttClient):
+    def on_message(client, userdata, msg):
+        print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+    client.subscribe(mqtttopic)
+    client.on_message = on_message
+
+
+client = connect_mqtt()	
 client.loop_start()        #start the loop
 time.sleep(1)
 #client.loop(2)
@@ -181,12 +185,13 @@ while True:
         
 # show the output frame
 	cv2.imshow("Frame", frame)
-	if (accuracy >95):
+	if (accuracy > 97):
 		if True:
 			# Publish a message with topic
 			client.publish(mqtttopic,label)
-			print('[INFO] Message Sent to the Broker')
-			client.loop(.3)
+#			subscribe(client)
+#			print('[INFO] Message Sent to the Broker')
+#			client.loop(.3)
         
 	key = cv2.waitKey(1) & 0xFF	
 	
