@@ -4,8 +4,8 @@
 # import the necessary packages
 
 import paho.mqtt.client as mqttClient
-import random
 import credentiels
+import pymysql.cursors
 
 
 ##################################################################
@@ -28,12 +28,30 @@ def connect_mqtt():
 ##################################################################
 def subscribe(client: mqttClient):
     def on_message(client, userdata, msg):
+
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+
+        # Prepare Data, separate columns and values
+        # msg_dict = msg.payload.decode()
+        cursor = con.cursor()
+        sql = '''insert into detection (curenttime) values (%s)'''
+        val = str(msg.payload.decode('utf-8'))
+        cursor.execute(sql, val)
+        con.commit()
+        print(cursor.rowcount, 'Data saved!')
 
     client.subscribe(credentiels.mqttTopic)
     client.on_message = on_message
 
 
+try:
+    con = pymysql.connect(host=credentiels.mysqlHost, user=credentiels.mysqlUser,
+                          password=credentiels.mysqlPassword,
+                          db=credentiels.dbName,
+                          charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+    print("MySQL Client Connected")
+except:
+    sys.exit("Connection to MySQL failed")
 client = connect_mqtt()
 subscribe(client)
 client.loop_forever()  # start the loop
