@@ -10,4 +10,4 @@ client_id = f'python-mqtt-{random.randint(0, 1000)}'
 mysqlHost = "bbzj937svfngzjrooibe-mysql.services.clever-cloud.com"
 mysqlUser = "uaxb8xwaqzqfhyg5"
 mysqlPassword = "TzBw8FtF0rB9hSVsPXye"
-dbName= "bbzj937svfngzjrooibe"
+dbName = "bbzj937svfngzjrooibe"

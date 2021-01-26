@@ -168,7 +168,7 @@ while True:
         accuracy = max(mask, withoutMask) * 100
         # include the probability in the label
         colorname = "RED" if color == (0, 0, 255) else "GREEN"
-        label = "{} : {} : {} : {:.2f}%".format(curenttime, state, colorname, accuracy, )
+        label = "{} : {} : {} : {:.2f}".format(curenttime, state, colorname, accuracy)
 
         # display the label and bounding box rectangle on the output
         # frame

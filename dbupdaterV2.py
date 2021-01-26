@@ -28,15 +28,15 @@ def connect_mqtt():
 ##################################################################
 def subscribe(client: mqttClient):
     def on_message(client, userdata, msg):
-
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
 
         # Prepare Data, separate columns and values
-        # msg_dict = msg.payload.decode()
+        val = str(msg.payload.decode('utf-8')).split(" : ")
+        convertedAccuracy = float(val[3])
+        sql = "INSERT INTO detection (curenttime, state, color, accuracy) VALUES (%s, %s, %s, %s)"
+        splitedValues = (val[0], val[1], val[2], convertedAccuracy)
         cursor = con.cursor()
-        sql = '''insert into detection (curenttime) values (%s)'''
-        val = str(msg.payload.decode('utf-8'))
-        cursor.execute(sql, val)
+        cursor.execute(sql, splitedValues)
         con.commit()
         print(cursor.rowcount, 'Data saved!')
 
